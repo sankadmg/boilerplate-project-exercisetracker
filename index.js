@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
-const bobyParser = require("body-parser");
 require("dotenv").config();
 // const client = new MongoClient(process.env.MONGO_URI);
 // const db = client.db("urlShortner");
@@ -14,8 +13,8 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // new Date().toDateString();
 
-app.use(bobyParser.urlencoded({ extended: true }));
-app.use(bobyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.static("public"));
 
@@ -81,7 +80,7 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
     // };
 
     const exerciseObj = new Exercise({
-      user_id: _id,
+      user_id: user._id,
       description,
       duration,
       date: date ? new Date(date) : new Date(),
@@ -93,12 +92,12 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
         {
           user: user.username,
           description: exercise.description,
-          duration: parseInt(exercise.duration),
+          duration: exercise.duration,
           date: new Date(exercise.date).toDateString(),
-          _id: _id,
+          _id: user._id.toJSON(),
         },
         null,
-        2
+        3
       )
     );
   } catch (error) {
