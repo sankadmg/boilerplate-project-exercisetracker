@@ -39,36 +39,6 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/views/index.html");
 });
 
-app.post("/api/users/:_id/exercises", async (req, res) => {
-  const id = req.params._id;
-  const { description, duration, date } = req.body;
-
-  try {
-    const user = await User.findById(id);
-    if (!user) {
-      res.send("Could not found user");
-    } else {
-      const exerciseObj = new Exercise({
-        user_id: user._id,
-        description,
-        duration,
-        date: date ? new Date(date) : new Date(),
-      });
-      const exercise = await exerciseObj.save();
-      res.json({
-        user: user.username,
-        description: exercise.description,
-        duration: exercise.duration,
-        date: new Date(exercise.date).toDateString(),
-        _id: user._id.toJSON(),
-      });
-    }
-  } catch (error) {
-    res.send("There was an error saving the exersice");
-    console.log(error);
-  }
-});
-
 app.get("/api/users", async function (req, res) {
   const users = await User.find({}).select("_id username");
   if (!users) {
@@ -88,6 +58,45 @@ app.post("/api/users", async function (req, res) {
     console.log(user);
     res.json(user);
   } catch (error) {
+    console.log(error);
+  }
+});
+
+app.post("/api/users/:_id/exercises", async (req, res) => {
+  const { _id } = req.params;
+  const { description, duration, date } = req.body;
+
+  try {
+    const user = await User.findById(_id);
+    if (!user) {
+      res.send("Could not found user");
+    }
+    const exercise = {
+      username: user.username,
+      description,
+      duration: parseInt(duration),
+      date: date ? new Date(date).toDateString() : new Date().toDateString(),
+      _id: user._id,
+    };
+    user.exercises.push(exercise);
+    await user.save();
+    res.json(exercise);
+    // const exerciseObj = new Exercise({
+    //   user_id: user._id,
+    //   description,
+    //   duration,
+    //   date: date ? new Date(date) : new Date(),
+    // });
+    // const exercise = await exerciseObj.save();
+    // res.json({
+    //   user: user.username,
+    //   description: exercise.description,
+    //   duration: exercise.duration,
+    //   date: new Date(exercise.date).toDateString(),
+    //   _id: user._id.toJSON(),
+    // });
+  } catch (error) {
+    res.send("There was an error saving the exersice");
     console.log(error);
   }
 });
