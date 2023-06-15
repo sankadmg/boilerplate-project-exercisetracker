@@ -60,7 +60,7 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
         description: exercise.description,
         duration: exercise.duration,
         date: new Date(exercise.date).toDateString(),
-        _id: user._id,
+        _id: user._id.toJSON(),
       });
     }
   } catch (error) {
