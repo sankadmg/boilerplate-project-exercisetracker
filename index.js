@@ -71,30 +71,28 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
     if (!user) {
       res.send("Could not found user");
     }
-    const exercise = {
-      username: user.username,
-      description,
-      duration: parseInt(duration),
-      date: date ? new Date(date).toDateString() : new Date().toDateString(),
-      _id: user._id,
-    };
-    user.exercises.push(exercise);
-    await user.save();
-    res.json(exercise);
-    // const exerciseObj = new Exercise({
-    //   user_id: user._id,
+    // const exercise = {
+    //   username: user.username,
     //   description,
-    //   duration,
-    //   date: date ? new Date(date) : new Date(),
-    // });
-    // const exercise = await exerciseObj.save();
-    // res.json({
-    //   user: user.username,
-    //   description: exercise.description,
-    //   duration: exercise.duration,
-    //   date: new Date(exercise.date).toDateString(),
-    //   _id: user._id.toJSON(),
-    // });
+    //   duration: parseInt(duration),
+    //   date: date ? new Date(date).toDateString() : new Date().toDateString(),
+    //   _id: user._id,
+    // };
+
+    const exerciseObj = new Exercise({
+      user_id: user._id,
+      description,
+      duration,
+      date: date ? new Date(date) : new Date(),
+    });
+    const exercise = await exerciseObj.save();
+    res.json({
+      user: user.username,
+      description: exercise.description,
+      duration: exercise.duration,
+      date: new Date(exercise.date).toDateString(),
+      _id: user._id.toJSON(),
+    });
   } catch (error) {
     res.send("There was an error saving the exersice");
     console.log(error);
