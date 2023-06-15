@@ -39,29 +39,6 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/views/index.html");
 });
 
-app.get("/api/users", async function (req, res) {
-  const users = await User.find({}).select("_id username");
-  if (!users) {
-    res.send("No users");
-  } else {
-    res.json(users);
-  }
-});
-
-app.post("/api/users", async function (req, res) {
-  console.log(req.body);
-  const userObj = new User({
-    username: req.body.username,
-  });
-  try {
-    const user = await userObj.save();
-    console.log(user);
-    res.json(user);
-  } catch (error) {
-    console.log(error);
-  }
-});
-
 app.post("/api/users/:_id/exercises", async (req, res) => {
   const id = req.params._id;
   const { description, duration, date } = req.body;
@@ -88,6 +65,29 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
     }
   } catch (error) {
     res.send("There was an error saving the exersice");
+    console.log(error);
+  }
+});
+
+app.get("/api/users", async function (req, res) {
+  const users = await User.find({}).select("_id username");
+  if (!users) {
+    res.send("No users");
+  } else {
+    res.json(users);
+  }
+});
+
+app.post("/api/users", async function (req, res) {
+  console.log(req.body);
+  const userObj = new User({
+    username: req.body.username,
+  });
+  try {
+    const user = await userObj.save();
+    console.log(user);
+    res.json(user);
+  } catch (error) {
     console.log(error);
   }
 });
