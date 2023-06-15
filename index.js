@@ -86,13 +86,15 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
       date: date ? new Date(date) : new Date(),
     });
     const exercise = await exerciseObj.save();
-    res.send({
-      user: user.username,
-      description: exercise.description,
-      duration: exercise.duration,
-      date: new Date(exercise.date).toDateString(),
-      _id: user._id.toJSON(),
-    });
+    res.json([
+      {
+        user: user.username,
+        description: exercise.description,
+        duration: exercise.duration,
+        date: new Date(exercise.date).toDateString(),
+        _id: user._id.toJSON(),
+      },
+    ]);
   } catch (error) {
     res.send("There was an error saving the exersice");
     console.log(error);
