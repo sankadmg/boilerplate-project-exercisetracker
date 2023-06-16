@@ -90,7 +90,7 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
     res.end(
       JSON.stringify(
         {
-          user: user.username,
+          username: user.username,
           description: exercise.description,
           duration: exercise.duration,
           date: new Date(exercise.date).toDateString(),
